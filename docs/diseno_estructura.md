@@ -5,11 +5,11 @@
 ```mermaid
 flowchart TB
     F[Barra lateral: región · corte · periodo · estado · ocupación]
-    K[KPI: avisos · vacantes · inversión · obras · cupos]
-    P[Panorama: tendencia mensual + top de demanda]
+    K[KPI con alcance: avisos · inversión · prioridades · cupos]
+    P[Panorama: conclusiones + sugerencias + tendencia]
     D[Demanda: avisos y vacantes por ocupación]
     I[Inversión: monto y contratos por comuna]
-    C[Capacitación: prioridad + cursos + cupos + detalle]
+    C[Capacitación: prioridad + cursos + brecha cupos/vacantes]
     Q[Nota de calidad y fuente activa]
     F --> K
     K --> P
@@ -25,10 +25,10 @@ La autoridad primero recibe una síntesis comparable mediante KPI y tendencia. L
 
 | Sección | Pregunta | Fuente y medida |
 |---|---|---|
-| Panorama | ¿Cuál es la magnitud y evolución de las señales? | Avisos por mes; total de inversión; obras; cupos |
+| Panorama | ¿Qué cambió y qué conviene revisar primero? | Variación de avisos; concentración de inversión; menor cobertura |
 | Demanda | ¿Qué ocupaciones concentran avisos y vacantes? | Avisos, agrupados por CIUO y periodo |
 | Inversión | ¿En qué comunas se concentra la inversión? | Suma de monto vigente y número de contratos |
-| Capacitación | ¿Qué cursos responden a las prioridades? | Recomendaciones 1:N cursos por CIUO; cupos y nivel |
+| Capacitación | ¿Qué cursos responden a las prioridades y dónde hay menor cobertura? | Recomendaciones 1:N cursos por CIUO; cupos por cada 100 vacantes y nivel |
 
 ## Flujo de datos
 

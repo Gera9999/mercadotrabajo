@@ -2,6 +2,7 @@
 __pycache__/
 .pytest_cache/
 *.py[cod]
+~$*.xlsx
 .streamlit/secrets.toml
 data/processed/*.csv
 data/processed/*.json

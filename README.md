@@ -2,6 +2,8 @@
 
 Solución Vía B de la prueba técnica: ETL reproducible en Python y tablero interactivo en Streamlit/Plotly para integrar demanda laboral, inversión pública, ocupaciones prioritarias y cursos disponibles.
 
+**Aplicación publicada:** [mercadotrabajo.streamlit.app](https://mercadotrabajo.streamlit.app/)
+
 > Todos los datos son ficticios y corresponden a una región de ejemplo.
 
 ## Resultado
@@ -76,10 +78,11 @@ streamlit run streamlit_app.py
 
 Abra `http://localhost:8501`. En la barra lateral:
 
-1. Seleccione **Base · hasta abril 2026** y compruebe el último periodo.
-2. Cambie a **Actualizado · hasta mayo 2026**; la serie temporal y los KPI se recalculan.
+1. Seleccione **Corte base · abril 2026** y compruebe el último periodo.
+2. Cambie a **Corte actualizado · mayo 2026**; el periodo se amplía y la serie, KPI, conclusiones y brechas se recalculan.
 3. Use los filtros de región, periodo, estado de obra y ocupación.
-4. Revise las vistas **Inversión** y **Capacitación**, que responden las dos preguntas elegidas de la pauta.
+4. Revise las conclusiones y sugerencias del **Panorama**.
+5. Compare concentración territorial en **Inversión** y cupos por cada 100 vacantes en **Capacitación**.
 
 ## Despliegue en Streamlit Community Cloud
 
@@ -92,6 +95,8 @@ En [share.streamlit.io](https://share.streamlit.io/), cree una aplicación con e
 | Archivo principal | `streamlit_app.py` |
 
 Community Cloud instalará automáticamente las versiones fijadas en `requirements.txt`. No se requieren secretos ni variables de entorno para ejecutar el tablero con los datos incluidos en el repositorio.
+
+Los dos cortes de avisos se conservan porque la Tarea 4 exige construir con el archivo original y demostrar que el archivo actualizado agrega mayo sin rehacer el modelo. En una operación productiva, el pipeline seleccionaría automáticamente la última fuente validada y este control podría reservarse para auditoría.
 
 ## Verificación
 
