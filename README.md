@@ -2,7 +2,7 @@
 
 **Reporte para evaluación:** [Diagnóstico crítico y propuesta de reconstrucción](docs/reporte_tecnico.md). El documento responde explícitamente los criterios de las partes A y B, con una propuesta centrada en escalar el tablero a múltiples regiones y sostenerlo en el tiempo.
 
-Solución Vía B de la prueba técnica: ETL reproducible en Python y tablero interactivo en Streamlit/Plotly para integrar demanda laboral, inversión pública, ocupaciones prioritarias y cursos disponibles.
+Solución Vía B de la prueba técnica: ETL reproducible en Python y tablero interactivo en Streamlit/Plotly para integrar demanda laboral, inversión pública, ocupaciones prioritarias y cursos disponibles. La interfaz utiliza navegación lateral por módulos, indicadores contextualizados y hallazgos dinámicos para apoyar la lectura ejecutiva.
 
 **Aplicación publicada:** [mercadotrabajo.streamlit.app](https://mercadotrabajo.streamlit.app/)
 
@@ -83,8 +83,24 @@ Abra `http://localhost:8501`. En la barra lateral:
 1. Seleccione **Corte base · abril 2026** y compruebe el último periodo.
 2. Cambie a **Corte actualizado · mayo 2026**; el periodo se amplía y la serie, KPI, conclusiones y brechas se recalculan.
 3. Use los filtros de región, periodo, estado de obra y ocupación.
-4. Revise las conclusiones y sugerencias del **Panorama**.
-5. Compare concentración territorial en **Inversión** y cupos por cada 100 vacantes en **Capacitación**.
+4. Revise los hallazgos calculados al final de **Panorama**, **Demanda**, **Inversión** y **Recomendaciones**.
+5. Compare concentración territorial en **Inversión** y cupos por cada 100 vacantes en **Recomendaciones**.
+6. Abra **Consultar con IA** para hacer una pregunta sobre los indicadores de la vista activa.
+
+## Asistente IA con OpenAI
+
+Cada módulo incluye un chat compacto y contextual. El asistente recibe únicamente un resumen agregado de los filtros activos, responde en español sobre los datos mostrados y tiene instrucciones para rechazar solicitudes de modificación de código, archivos, configuración o temas ajenos al tablero. Sus respuestas son apoyo interpretativo: no alteran el ETL, los datos ni las recomendaciones deterministas.
+
+El punto exacto para configurar la API es la clave `OPENAI_API_KEY` que lee la función `ask_openai()` en `src/app.py`. No escriba la clave dentro del código ni la suba a Git.
+
+Para ejecución local, cree `.streamlit/secrets.toml`:
+
+```toml
+OPENAI_API_KEY = "su-clave-de-openai"
+OPENAI_MODEL = "gpt-4.1-mini"
+```
+
+El archivo ya está excluido por `.gitignore`. En Streamlit Community Cloud, abra **App settings → Secrets** y pegue las mismas dos líneas. `OPENAI_MODEL` es opcional; si se omite, la app usa `gpt-4.1-mini`. Sin `OPENAI_API_KEY`, el tablero funciona normalmente y el chat muestra una indicación de configuración.
 
 ## Despliegue en Streamlit Community Cloud
 
@@ -96,7 +112,7 @@ En [share.streamlit.io](https://share.streamlit.io/), cree una aplicación con e
 | Rama | `main` |
 | Archivo principal | `streamlit_app.py` |
 
-Community Cloud instalará automáticamente las versiones fijadas en `requirements.txt`. No se requieren secretos ni variables de entorno para ejecutar el tablero con los datos incluidos en el repositorio.
+Community Cloud instalará automáticamente las versiones fijadas en `requirements.txt`. El tablero de datos no requiere secretos; solo el asistente opcional necesita `OPENAI_API_KEY` en los secretos de la aplicación.
 
 Los dos cortes de avisos se conservan porque la Tarea 4 exige construir con el archivo original y demostrar que el archivo actualizado agrega mayo sin rehacer el modelo. En una operación productiva, el pipeline seleccionaría automáticamente la última fuente validada y este control podría reservarse para auditoría.
 

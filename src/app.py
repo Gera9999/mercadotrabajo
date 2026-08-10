@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
 import pandas as pd
 import plotly.express as px
@@ -20,18 +23,43 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    :root { --ink: #18332f; --teal: #087e72; --coral: #e05d44; --paper: #f5f3ed; }
-    .stApp { background: var(--paper); color: var(--ink); }
-    [data-testid="stHeader"] { background: rgba(245, 243, 237, .92); }
-    [data-testid="stMetric"] {
-        background: #ffffff; border-top: 4px solid var(--teal); padding: 14px 16px;
-        box-shadow: 0 2px 12px rgba(24, 51, 47, .08);
+    :root {
+        --ink: #27334a; --muted: #667085; --orange: #df7748; --orange-soft: #fff1e8;
+        --peach: #f8d8c4; --paper: #fffaf6; --line: #eadfd7; --white: #ffffff;
     }
-    [data-testid="stMetricValue"] { color: var(--ink); font-family: Georgia, serif; }
+    .stApp { background: var(--paper); color: var(--ink); }
+    [data-testid="stHeader"] { background: rgba(255, 250, 246, .92); }
+    [data-testid="stSidebar"] { background: #fff3ea; border-right: 1px solid var(--line); }
+    [data-testid="stSidebar"] [role="radiogroup"] label {
+        border-radius: 6px; padding: .55rem .7rem; margin-bottom: .2rem;
+    }
+    [data-testid="stSidebar"] [role="radiogroup"] label:has(input:checked) {
+        background: #f4c8ad; color: #71391f; font-weight: 700;
+    }
+    .block-container { max-width: 1180px; padding-top: 2.4rem; padding-bottom: 3rem; }
+    [data-testid="stMetric"] {
+        background: var(--white); border: 1px solid var(--line); border-top: 3px solid var(--orange);
+        border-radius: 7px; padding: 14px 16px; min-height: 126px;
+        box-shadow: 0 5px 18px rgba(93, 61, 42, .05);
+    }
+    [data-testid="stMetricValue"] { color: #bb572b; font-family: "Aptos Display", sans-serif; }
+    [data-testid="stMetricLabel"] { color: var(--muted); }
+    [data-testid="stVerticalBlockBorderWrapper"] {
+        background: rgba(255, 255, 255, .82); border-color: var(--line); border-radius: 7px;
+    }
+    [data-testid="stDataFrame"], [data-testid="stPlotlyChart"] {
+        border-radius: 7px; overflow: hidden;
+    }
     h1, h2, h3 { color: var(--ink); letter-spacing: 0; }
-    h1 { font-family: Georgia, serif; }
-    .eyebrow { color: var(--coral); font-weight: 700; text-transform: uppercase; }
-    .source-note { border-left: 4px solid var(--coral); padding-left: 12px; color: #4f625e; }
+    h1 { font-family: "Aptos Display", sans-serif; font-size: 2.15rem !important; }
+    .eyebrow { color: var(--orange); font-size: .78rem; font-weight: 800; text-transform: uppercase; }
+    .source-note {
+        border-left: 4px solid var(--orange); background: var(--orange-soft);
+        border-radius: 0 6px 6px 0; padding: 9px 12px; color: #714832;
+    }
+    .view-intro { color: var(--muted); font-size: 1.02rem; margin: -.6rem 0 1.2rem; }
+    .findings-title { color: #8e4525; font-size: .78rem; font-weight: 800; text-transform: uppercase; }
+    button[kind="secondary"] { border-color: #df9a77; }
     </style>
     """,
     unsafe_allow_html=True,
@@ -60,6 +88,84 @@ def reset_period_filter() -> None:
     st.session_state.pop("period_filter", None)
 
 
+def render_findings(title: str, findings: list[str]) -> None:
+    with st.container(border=True):
+        st.markdown(f'<div class="findings-title">{title}</div>', unsafe_allow_html=True)
+        for finding in findings:
+            st.markdown(f"- {finding}")
+
+
+def ask_openai(question: str, context: str) -> str:
+    try:
+        api_key = st.secrets.get("OPENAI_API_KEY", "")
+        model = st.secrets.get("OPENAI_MODEL", "gpt-4.1-mini")
+    except FileNotFoundError:
+        api_key = ""
+        model = "gpt-4.1-mini"
+    if not api_key:
+        raise RuntimeError("Falta configurar OPENAI_API_KEY en los secretos de Streamlit.")
+
+    system_prompt = (
+        "Eres el asistente de Radar Laboral Regional. Responde en español, de forma breve y "
+        "ejecutiva, usando exclusivamente el contexto agregado entregado. Puedes explicar, "
+        "comparar y resumir los indicadores. No entregues ni modifiques código, configuración, "
+        "archivos o datos. Rechaza solicitudes ajenas al mercado laboral mostrado y reconoce "
+        "cuando el contexto no permite responder. No presentes correlaciones como causalidad."
+    )
+    payload = json.dumps(
+        {
+            "model": model,
+            "input": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": f"Contexto de la vista:\n{context}\n\nConsulta: {question}"},
+            ],
+            "max_output_tokens": 350,
+        }
+    ).encode("utf-8")
+    request = Request(
+        "https://api.openai.com/v1/responses",
+        data=payload,
+        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+        method="POST",
+    )
+    try:
+        with urlopen(request, timeout=30) as response:
+            result = json.loads(response.read().decode("utf-8"))
+    except HTTPError as error:
+        detail = error.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"OpenAI respondió con estado {error.code}: {detail[:180]}") from error
+    except URLError as error:
+        raise RuntimeError("No fue posible conectar con OpenAI.") from error
+
+    texts = [
+        content.get("text", "")
+        for item in result.get("output", [])
+        for content in item.get("content", [])
+        if content.get("type") == "output_text"
+    ]
+    return "\n".join(filter(None, texts)) or "No se recibió una respuesta utilizable."
+
+
+def render_ai_assistant(view_name: str, context: str) -> None:
+    history_key = f"chat_history_{view_name.lower()}"
+    history = st.session_state.setdefault(history_key, [])
+    with st.popover("Consultar con IA", icon=":material/chat_bubble:", width="content"):
+        st.caption(f"Asistente contextual · {view_name}")
+        st.write("Consulta los indicadores visibles. El asistente no modifica datos ni código.")
+        for message in history[-6:]:
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
+        question = st.chat_input("Pregunta sobre esta vista", key=f"chat_input_{view_name}")
+        if question:
+            history.append({"role": "user", "content": question})
+            try:
+                answer = ask_openai(question, context)
+            except RuntimeError as error:
+                answer = str(error)
+            history.append({"role": "assistant", "content": answer})
+            st.rerun()
+
+
 @st.cache_data(show_spinner="Actualizando modelo...")
 def load_model(
     raw_dir: str,
@@ -86,6 +192,21 @@ if not available_files:
 
 default_index = available_files.index(DEFAULT_AVISOS_FILE) if DEFAULT_AVISOS_FILE in available_files else 0
 with st.sidebar:
+    st.markdown("### RADAR Laboral")
+    st.caption("Observatorio Laboral Regional")
+    page = st.radio(
+        "Navegación principal",
+        ("Panorama", "Demanda", "Inversión", "Recomendaciones"),
+        format_func=lambda option: {
+            "Panorama": "01 · Panorama",
+            "Demanda": "02 · Demanda",
+            "Inversión": "03 · Inversión",
+            "Recomendaciones": "04 · Recomendaciones",
+        }[option],
+        label_visibility="collapsed",
+        key="page_navigation",
+    )
+    st.divider()
     st.header("Filtros")
     if st.button("Restablecer filtros", icon=":material/restart_alt:", width="stretch"):
         for key in ("source_filter", "region_filter", "period_filter", "status_filter"):
@@ -142,21 +263,50 @@ obras_filtered = obras.loc[
 recommendations_filtered = recomendaciones.loc[recomendaciones["region"].eq(region)].copy()
 courses_filtered = recomendacion_cursos.loc[recomendacion_cursos["region"].eq(region)].copy()
 
-st.markdown('<div class="eyebrow">Inteligencia para capacitación</div>', unsafe_allow_html=True)
-st.title("Radar Laboral Regional")
-st.caption(f"{region} · Datos ficticios de demostración")
+view_content = {
+    "Panorama": (
+        f"Mercado laboral · {region}",
+        "Síntesis regional de demanda, inversión y oferta formativa para orientar decisiones.",
+    ),
+    "Demanda": (
+        "Demanda de ocupaciones",
+        "Ocupaciones con mayor presencia en los avisos de empleo del periodo seleccionado.",
+    ),
+    "Inversión": (
+        "Inversión en obras públicas",
+        "Contratos catastrados por estado de avance y concentración territorial.",
+    ),
+    "Recomendaciones": (
+        "Recomendaciones de capacitación",
+        "Prioridad, demanda de portales y oferta de cursos reunidas en una vista accionable.",
+    ),
+}
+view_title, view_description = view_content[page]
+st.markdown('<div class="eyebrow">Radar laboral regional</div>', unsafe_allow_html=True)
+st.title(view_title)
+st.markdown(f'<div class="view-intro">{view_description}</div>', unsafe_allow_html=True)
 
 metric_columns = st.columns(4)
-metric_columns[0].metric("Avisos en el periodo", integer(avisos_filtered["anuncios_empleo"].sum()))
-metric_columns[1].metric("Inversión seleccionada", clp(obras_filtered["monto_vigente_contrato"].sum()))
-metric_columns[2].metric("Ocupaciones prioritarias", integer(recommendations_filtered["codigo_ciuo"].nunique()))
-metric_columns[3].metric("Cupos disponibles", integer(courses_filtered["cupos"].sum()))
-metric_columns[0].caption(f"{selected_start:%m-%Y} a {selected_end:%m-%Y}")
-metric_columns[1].caption(
-    f"{len(selected_statuses)} de {len(statuses)} estados de obra"
-)
-metric_columns[2].caption("Ranking regional vigente")
-metric_columns[3].caption("Catálogo completo disponible")
+if page == "Panorama":
+    metric_columns[0].metric("Avisos en el periodo", integer(avisos_filtered["anuncios_empleo"].sum()))
+    metric_columns[1].metric("Vacantes informadas", integer(avisos_filtered["vacantes_empleo"].sum()))
+    metric_columns[2].metric("Ocupaciones prioritarias", integer(recommendations_filtered["codigo_ciuo"].nunique()))
+    metric_columns[3].metric("Obras catastradas", integer(obras_filtered["nombre_contrato"].nunique()))
+elif page == "Demanda":
+    metric_columns[0].metric("Avisos", integer(avisos_filtered["anuncios_empleo"].sum()))
+    metric_columns[1].metric("Vacantes", integer(avisos_filtered["vacantes_empleo"].sum()))
+    metric_columns[2].metric("Ocupaciones", integer(avisos_filtered["codigo_ciuo"].nunique()))
+    metric_columns[3].metric("Meses analizados", integer(avisos_filtered["periodo"].nunique()))
+elif page == "Inversión":
+    metric_columns[0].metric("Contratos", integer(obras_filtered["nombre_contrato"].nunique()))
+    metric_columns[1].metric("Monto vigente", clp(obras_filtered["monto_vigente_contrato"].sum()))
+    metric_columns[2].metric("En ejecución", integer(obras_filtered["estado"].eq("En Ejecucion").sum()))
+    metric_columns[3].metric("Comunas", integer(obras_filtered["comuna"].nunique()))
+else:
+    metric_columns[0].metric("Ocupaciones priorizadas", integer(recommendations_filtered["codigo_ciuo"].nunique()))
+    metric_columns[1].metric("Con cursos", integer(courses_filtered.loc[courses_filtered["curso_disponible"], "codigo_ciuo"].nunique()))
+    metric_columns[2].metric("Cursos disponibles", integer(courses_filtered["codigo_plan"].nunique()))
+    metric_columns[3].metric("Cupos totales", integer(courses_filtered["cupos"].sum()))
 
 st.markdown(
     f'<p class="source-note"><strong>{source_label(avisos_file)}</strong> · '
@@ -194,15 +344,11 @@ coverage["cupos_por_100_vacantes"] = coverage["cupos"].div(
     coverage["vacantes"].replace(0, pd.NA)
 ).mul(100)
 
-tab_panorama, tab_demanda, tab_inversion, tab_capacitacion = st.tabs(
-    ["Panorama", "Demanda", "Inversión", "Capacitación"]
-)
-
-with tab_panorama:
+if page == "Panorama":
     st.subheader("Señales para decidir")
     conclusion_column, suggestion_column = st.columns([1.15, 1])
     with conclusion_column:
-        st.markdown("#### Conclusiones del corte")
+        st.markdown("#### Hallazgos del panorama")
         if latest_change is not None:
             direction = "aumentaron" if latest_change >= 0 else "disminuyeron"
             st.markdown(
@@ -273,17 +419,21 @@ with tab_panorama:
             width="stretch",
         )
 
-with tab_demanda:
-    st.subheader("Demanda por ocupación")
+if page == "Demanda":
+    st.subheader("Avisos y vacantes por ocupación")
     occupations = sorted(avisos_filtered["ocupacion_ciuo08cl_glosa"].unique())
     selected_occupations = st.multiselect(
         "Ocupaciones", occupations, default=occupations, key="occupation_filter"
     )
-    demand = avisos_filtered.loc[
+    demand_detail = avisos_filtered.loc[
         avisos_filtered["ocupacion_ciuo08cl_glosa"].isin(selected_occupations)
     ]
-    demand = demand.groupby("ocupacion_ciuo08cl_glosa", as_index=False).agg(
-        anuncios=("anuncios_empleo", "sum"), vacantes=("vacantes_empleo", "sum")
+    demand = demand_detail.groupby(
+        ["codigo_ciuo", "ocupacion_ciuo08cl_glosa"], as_index=False
+    ).agg(
+        anuncios=("anuncios_empleo", "sum"),
+        vacantes=("vacantes_empleo", "sum"),
+        remuneracion_mediana=("remuneracion_mediana", "median"),
     )
     demand = demand.sort_values("anuncios")
     if demand.empty:
@@ -296,47 +446,169 @@ with tab_demanda:
             orientation="h",
             barmode="group",
             labels={"value": "Cantidad", "variable": "Indicador", "ocupacion_ciuo08cl_glosa": ""},
-            color_discrete_map={"anuncios": "#087e72", "vacantes": "#e05d44"},
+            color_discrete_map={"anuncios": "#dd794d", "vacantes": "#edb18d"},
         )
-        figure.update_layout(height=max(430, len(demand) * 42), margin=dict(l=10, r=10, t=20, b=10))
+        figure.update_layout(
+            height=max(430, len(demand) * 42),
+            margin=dict(l=10, r=10, t=20, b=10),
+            plot_bgcolor="#fffaf6",
+            paper_bgcolor="rgba(0,0,0,0)",
+            legend_title_text="",
+        )
         st.plotly_chart(figure, width="stretch")
 
-with tab_inversion:
-    st.subheader("¿En qué comunas se concentra la inversión?")
+        trend_column, detail_column = st.columns([1.1, 1])
+        with trend_column:
+            st.markdown("#### Evolución mensual")
+            demand_monthly = demand_detail.groupby("periodo", as_index=False)[
+                "anuncios_empleo"
+            ].sum()
+            trend = px.line(
+                demand_monthly,
+                x="periodo",
+                y="anuncios_empleo",
+                markers=True,
+                labels={"periodo": "Mes", "anuncios_empleo": "Avisos"},
+                color_discrete_sequence=["#d86f40"],
+            )
+            trend.update_layout(
+                height=360,
+                margin=dict(l=10, r=10, t=20, b=10),
+                plot_bgcolor="#fffaf6",
+                paper_bgcolor="rgba(0,0,0,0)",
+            )
+            st.plotly_chart(trend, width="stretch")
+        with detail_column:
+            st.markdown("#### Detalle por ocupación")
+            st.dataframe(
+                demand.sort_values("anuncios", ascending=False).rename(
+                    columns={
+                        "codigo_ciuo": "CIUO",
+                        "ocupacion_ciuo08cl_glosa": "Ocupación",
+                        "anuncios": "Avisos",
+                        "vacantes": "Vacantes",
+                        "remuneracion_mediana": "Remuneración mediana",
+                    }
+                ),
+                hide_index=True,
+                width="stretch",
+                column_config={"Remuneración mediana": st.column_config.NumberColumn(format="$%d")},
+            )
+
+        demand_leader = demand.iloc[-1]
+        demand_floor = demand.iloc[0]
+        demand_range = demand["anuncios"].max() - demand["anuncios"].min()
+        render_findings(
+            "Hallazgos de demanda",
+            [
+                f"**{demand_leader['ocupacion_ciuo08cl_glosa']}** lidera con {integer(demand_leader['anuncios'])} avisos y {integer(demand_leader['vacantes'])} vacantes.",
+                f"La diferencia entre la ocupación con más y menos avisos seleccionados es de **{integer(demand_range)}**.",
+                f"**{demand_floor['ocupacion_ciuo08cl_glosa']}** registra el menor volumen dentro de la selección actual.",
+            ],
+        )
+
+if page == "Inversión":
+    st.subheader("Estado y concentración de la cartera")
     if investment.empty:
         st.info("Seleccione al menos un estado de obra para analizar la inversión.")
     else:
-        st.markdown(
-            f"**{investment.iloc[0]['comuna']}** concentra {percentage(leader_share)} del monto; "
-            f"las tres comunas líderes reúnen {percentage(top_three_share)}."
+        status_summary = (
+            obras_filtered.groupby("estado", as_index=False)
+            .agg(contratos=("nombre_contrato", "nunique"), monto=("monto_vigente_contrato", "sum"))
+            .sort_values("monto")
         )
-        figure = px.bar(
-            investment.sort_values("inversion"),
-            x="inversion",
-            y="comuna",
-            orientation="h",
-            text="contratos",
-            custom_data=["contratos"],
-            labels={"inversion": "Monto vigente (CLP)", "comuna": ""},
-            color="inversion",
-            color_continuous_scale=["#d9e8df", "#087e72", "#18332f"],
-        )
-        figure.update_traces(
-            texttemplate="%{text} contratos",
-            textposition="outside",
-            cliponaxis=False,
-            hovertemplate="%{y}<br>Inversión: $%{x:,.0f}<br>Contratos: %{customdata[0]}",
-        )
-        figure.update_layout(
-            height=500, coloraxis_showscale=False, margin=dict(l=10, r=90, t=20, b=10)
-        )
-        st.plotly_chart(figure, width="stretch")
+        state_column, commune_column = st.columns(2)
+        with state_column:
+            st.markdown("#### Monto por estado de avance")
+            state_figure = px.bar(
+                status_summary,
+                x="monto",
+                y="estado",
+                orientation="h",
+                text_auto=".3s",
+                labels={"monto": "Monto vigente (CLP)", "estado": ""},
+                color_discrete_sequence=["#dc784b"],
+            )
+            state_figure.update_layout(
+                height=410,
+                margin=dict(l=10, r=20, t=20, b=10),
+                plot_bgcolor="#fffaf6",
+                paper_bgcolor="rgba(0,0,0,0)",
+            )
+            st.plotly_chart(state_figure, width="stretch")
+        with commune_column:
+            st.markdown("#### Inversión por comuna")
+            commune_figure = px.bar(
+                investment.sort_values("inversion"),
+                x="inversion",
+                y="comuna",
+                orientation="h",
+                custom_data=["contratos"],
+                labels={"inversion": "Monto vigente (CLP)", "comuna": ""},
+                color="inversion",
+                color_continuous_scale=["#fbe7da", "#e9986f", "#b8512c"],
+            )
+            commune_figure.update_traces(
+                hovertemplate="%{y}<br>Inversión: $%{x:,.0f}<br>Contratos: %{customdata[0]}"
+            )
+            commune_figure.update_layout(
+                height=410,
+                coloraxis_showscale=False,
+                margin=dict(l=10, r=20, t=20, b=10),
+                plot_bgcolor="#fffaf6",
+                paper_bgcolor="rgba(0,0,0,0)",
+            )
+            st.plotly_chart(commune_figure, width="stretch")
 
-with tab_capacitacion:
-    st.subheader("¿Qué cursos responden a las prioridades?")
+        st.markdown("#### Detalle por estado")
+        st.dataframe(
+            status_summary.sort_values("monto", ascending=False).rename(
+                columns={"estado": "Estado", "contratos": "Contratos", "monto": "Monto vigente"}
+            ),
+            hide_index=True,
+            width="stretch",
+            column_config={"Monto vigente": st.column_config.NumberColumn(format="$%d")},
+        )
+        leading_state = status_summary.iloc[-1]
+        without_contractor = obras_filtered["estado"].isin(["En Licitacion", "Por Licitar"]).sum()
+        render_findings(
+            "Hallazgos de inversión",
+            [
+                f"La selección reúne **{integer(len(obras_filtered))} contratos** por {clp(investment_total)}.",
+                f"**{leading_state['estado']}** concentra el mayor monto por {clp(leading_state['monto'])}.",
+                f"**{integer(without_contractor)} obras** están en licitación o por licitar dentro del filtro actual.",
+                f"**{investment.iloc[0]['comuna']}** lidera la inversión comunal y las tres primeras comunas concentran {percentage(top_three_share)}.",
+            ],
+        )
+
+if page == "Recomendaciones":
+    st.subheader("Ranking de ocupaciones prioritarias")
     st.caption(
-        "Cobertura = cupos disponibles por cada 100 vacantes observadas en el periodo seleccionado. "
-        "Es una señal comparativa, no una estimación de matrícula necesaria."
+        "El orden proviene de la recomendación regional. Avisos, vacantes y cursos son señales "
+        "complementarias que no alteran esa prioridad."
+    )
+    st.dataframe(
+        coverage[
+            ["orden_prioridad", "glosa_ciuo", "codigo_ciuo", "avisos", "vacantes", "cursos", "cupos"]
+        ].rename(
+            columns={
+                "orden_prioridad": "Prioridad",
+                "glosa_ciuo": "Ocupación",
+                "codigo_ciuo": "CIUO",
+                "avisos": "Avisos",
+                "vacantes": "Vacantes",
+                "cursos": "Cursos",
+                "cupos": "Cupos",
+            }
+        ),
+        hide_index=True,
+        width="stretch",
+    )
+
+    st.markdown("#### Cobertura de la oferta formativa")
+    st.caption(
+        "Cupos disponibles por cada 100 vacantes observadas. Es una señal comparativa, no una "
+        "estimación automática de matrícula necesaria."
     )
     figure = px.bar(
         coverage.sort_values("cupos_por_100_vacantes", ascending=False),
@@ -349,7 +621,7 @@ with tab_capacitacion:
             "cupos_por_100_vacantes": "Cupos por 100 vacantes",
             "glosa_ciuo": "",
         },
-        color_continuous_scale=["#e05d44", "#f0c36e", "#087e72"],
+        color_continuous_scale=["#b94f2b", "#e99972", "#f8d8c4"],
     )
     figure.update_traces(
         hovertemplate="%{y}<br>CIUO: %{customdata[0]}<br>Prioridad: %{customdata[2]}"
@@ -357,7 +629,11 @@ with tab_capacitacion:
         "<br>Vacantes: %{customdata[4]}<br>Cupos por 100 vacantes: %{x:.1f}"
     )
     figure.update_layout(
-        height=500, coloraxis_colorbar_title="Cobertura", margin=dict(l=10, r=10, t=20, b=10)
+        height=500,
+        coloraxis_colorbar_title="Cobertura",
+        margin=dict(l=10, r=10, t=20, b=10),
+        plot_bgcolor="#fffaf6",
+        paper_bgcolor="rgba(0,0,0,0)",
     )
     st.plotly_chart(figure, width="stretch")
     st.markdown("#### Cursos disponibles")
@@ -377,6 +653,35 @@ with tab_capacitacion:
         hide_index=True,
         width="stretch",
     )
+    if coverage["cupos_por_100_vacantes"].notna().any():
+        lowest_coverage = coverage.loc[coverage["cupos_por_100_vacantes"].idxmin()]
+        largest_offer = coverage.loc[coverage["cupos"].idxmax()]
+        covered_occupations = courses_filtered.loc[
+            courses_filtered["curso_disponible"], "codigo_ciuo"
+        ].nunique()
+        render_findings(
+            "Hallazgos de recomendaciones",
+            [
+                f"Las {integer(covered_occupations)} ocupaciones priorizadas tienen al menos un curso disponible.",
+                f"**{lowest_coverage['glosa_ciuo']}** presenta la menor cobertura relativa: {lowest_coverage['cupos_por_100_vacantes']:.1f} cupos por 100 vacantes.",
+                f"**{largest_offer['glosa_ciuo']}** concentra la mayor oferta con {integer(largest_offer['cupos'])} cupos.",
+                "La cobertura orienta la revisión de compra, pero debe contrastarse con empleadores, matrícula y ejecución histórica.",
+            ],
+        )
+
+assistant_context = (
+    f"Vista: {page}. Región: {region}. Periodo: {selected_start:%Y-%m} a {selected_end:%Y-%m}. "
+    f"Avisos: {int(avisos_filtered['anuncios_empleo'].sum())}. "
+    f"Vacantes: {int(avisos_filtered['vacantes_empleo'].sum())}. "
+    f"Obras filtradas: {len(obras_filtered)}. "
+    f"Inversión filtrada CLP: {int(obras_filtered['monto_vigente_contrato'].sum())}. "
+    f"Ocupaciones prioritarias: {recommendations_filtered['codigo_ciuo'].nunique()}. "
+    f"Cursos: {courses_filtered['codigo_plan'].nunique()}. Cupos: {int(courses_filtered['cupos'].sum())}. "
+    f"Demanda por ocupación: {demand_by_occupation.to_dict(orient='records')}. "
+    f"Cobertura formativa: {coverage.to_dict(orient='records')}. "
+    f"Inversión por comuna: {investment.to_dict(orient='records')}."
+)
+render_ai_assistant(page, assistant_context)
 
 with st.expander("Calidad, alcance y trazabilidad"):
     missing_salaries = int(avisos_filtered["remuneracion_mediana"].isna().sum())

@@ -40,6 +40,8 @@ En producción, un job programado detectaría archivos en SharePoint o Drive med
 
 La IA puede sugerir equivalencias para glosas nuevas o anomalías semánticas durante la limpieza, acelerando la clasificación y el hallazgo de valores sospechosos. Nunca debe modificar datos automáticamente: cada sugerencia debe incluir confianza, dato original y decisión humana. Las reglas deterministas, el catálogo CIUO, el registro de decisiones y las pruebas siguen siendo la autoridad para no comprometer calidad ni trazabilidad.
 
+Como mejora concreta adicional, cada módulo incorpora un asistente conversacional no invasivo que explica, resume y compara los indicadores visibles según los filtros activos. Solo recibe agregados de la vista, no acceso a archivos, ETL ni herramientas; su instrucción de sistema limita las respuestas al mercado laboral presentado, prohíbe modificar código o datos y exige reconocer cuando el contexto es insuficiente. Esto reduce la barrera de lectura para autoridades sin reemplazar los hallazgos reproducibles ni convertir una respuesta generativa en evidencia. La clave se gestiona mediante secretos de Streamlit, nunca en el repositorio; sin ella, el tablero conserva toda su funcionalidad analítica.
+
 ### B.6 Mejora prioritaria con recursos limitados
 
 Con recursos limitados priorizaría primero un ETL automatizado con controles y actualización parametrizada por región. Corrige la condición crítica de sostenibilidad, reduce el riesgo transversal de datos erróneos y evita replicar trabajo al incorporar nuevas regiones. También crea una base confiable sobre la cual mejorar visualizaciones y desplegar el servicio institucional.
@@ -48,7 +50,7 @@ Supuestos: montos en CLP; fechas día-mes-año; abreviaturas mensuales en españ
 
 ## Parte 2 · Construcción y guía de entrega
 
-Se eligió la Vía B con Python, pandas, Streamlit y Plotly por reproducibilidad, portabilidad y ausencia de licencias. El anexo ejecutable es `src/app.py`: presenta Panorama, Demanda, Inversión y Capacitación, con filtros de región, periodo, estado, ocupación y fuente. `docs/diseno_estructura.md` contiene el boceto obligatorio, la pregunta de cada sección y su dato. `src/etl.py` es el anexo técnico del cruce y las transformaciones; `tests/test_etl.py` documenta controles ejecutables.
+Se eligió la Vía B con Python, pandas, Streamlit y Plotly por reproducibilidad, portabilidad y ausencia de licencias. El anexo ejecutable es `src/app.py`: presenta Panorama, Demanda, Inversión y Recomendaciones mediante navegación lateral, con filtros de región, periodo, estado, ocupación y fuente. Cada módulo cierra con hallazgos calculados y dispone de un asistente contextual opcional. `docs/diseno_estructura.md` contiene el boceto obligatorio, la pregunta de cada sección y su dato. `src/etl.py` es el anexo técnico del cruce y las transformaciones; `tests/test_etl.py` documenta controles ejecutables.
 
 El ETL lee cuatro fuentes base sin alterarlas. En obras, elimina puntos de miles, convierte montos a enteros y parsea fechas con formatos mixtos y día primero. En avisos, convierte textos como “55 avisos”, normaliza meses a una fecha mensual y preserva remuneraciones faltantes como nulos con bandera de calidad. Los encabezados pasan a `snake_case`; textos se recortan; CIUO se conserva como texto. Recomendaciones y cursos se unen por `codigo_ciuo` mediante relación uno-a-muchos validada: una prioridad puede ofrecer varios cursos. Los indicadores incluyen suma de inversión, avisos, vacantes, obras, cursos y cupos.
 
