@@ -50,6 +50,28 @@ st.markdown(
     [data-testid="stDataFrame"], [data-testid="stPlotlyChart"] {
         border-radius: 7px; overflow: hidden;
     }
+    .metric-card {
+        background: var(--white); border: 1px solid var(--line); border-top: 3px solid var(--orange);
+        border-radius: 7px; padding: 14px 16px; min-height: 126px;
+        box-shadow: 0 5px 18px rgba(93, 61, 42, .05);
+        display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .metric-card__label { color: var(--muted); font-size: .85rem; font-weight: 600; }
+    .metric-card__value { color: #bb572b; font-family: "Aptos Display", sans-serif; font-size: clamp(1.02rem, 1.8vw, 1.6rem); line-height: 1.05; font-weight: 700; }
+    .metric-card__caption { color: var(--muted); font-size: .78rem; margin-top: .25rem; }
+    [data-testid="stPopoverButton"] {
+        position: fixed;
+        right: 1.15rem;
+        bottom: 5.2rem;
+        z-index: 9998;
+        box-shadow: 0 10px 25px rgba(93, 61, 42, .16);
+        border-radius: 999px;
+    }
+    [data-testid="stPopoverButton"] button {
+        border-radius: 999px;
+        border: 1px solid #e4a57f;
+        background: #fff4ed;
+    }
     h1, h2, h3 { color: var(--ink); letter-spacing: 0; }
     h1 { font-family: "Aptos Display", sans-serif; font-size: 2.15rem !important; }
     .eyebrow { color: var(--orange); font-size: .78rem; font-weight: 800; text-transform: uppercase; }
@@ -149,7 +171,7 @@ def ask_openai(question: str, context: str) -> str:
 def render_ai_assistant(view_name: str, context: str) -> None:
     history_key = f"chat_history_{view_name.lower()}"
     history = st.session_state.setdefault(history_key, [])
-    with st.popover("Consultar con IA", icon=":material/chat_bubble:", width="content"):
+    with st.popover("IA · Consultar con IA", icon=":material/smart_toy:", width="content"):
         st.caption(f"Asistente contextual · {view_name}")
         st.write("Consulta los indicadores visibles. El asistente no modifica datos ni código.")
         for message in history[-6:]:
@@ -299,7 +321,16 @@ elif page == "Demanda":
     metric_columns[3].metric("Meses analizados", integer(avisos_filtered["periodo"].nunique()))
 elif page == "Inversión":
     metric_columns[0].metric("Contratos", integer(obras_filtered["nombre_contrato"].nunique()))
-    metric_columns[1].metric("Monto vigente", clp(obras_filtered["monto_vigente_contrato"].sum()))
+    metric_columns[1].markdown(
+        f"""
+        <div class="metric-card">
+            <div class="metric-card__label">Monto vigente</div>
+            <div class="metric-card__value">{clp(obras_filtered['monto_vigente_contrato'].sum())}</div>
+            <div class="metric-card__caption">Total seleccionado</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     metric_columns[2].metric("En ejecución", integer(obras_filtered["estado"].eq("En Ejecucion").sum()))
     metric_columns[3].metric("Comunas", integer(obras_filtered["comuna"].nunique()))
 else:
@@ -422,9 +453,14 @@ if page == "Panorama":
 if page == "Demanda":
     st.subheader("Avisos y vacantes por ocupación")
     occupations = sorted(avisos_filtered["ocupacion_ciuo08cl_glosa"].unique())
-    selected_occupations = st.multiselect(
-        "Ocupaciones", occupations, default=occupations, key="occupation_filter"
-    )
+    with st.expander("Ocupaciones", expanded=False):
+        st.caption("Seleccione una o más ocupaciones. Este filtro permanece colapsado para no competir con la vista.")
+        occupation_columns = st.columns(2)
+        selected_occupations = []
+        for index, occupation in enumerate(occupations):
+            column = occupation_columns[index % 2]
+            if column.checkbox(occupation, value=True, key=f"occupation_checkbox_{occupation}"):
+                selected_occupations.append(occupation)
     demand_detail = avisos_filtered.loc[
         avisos_filtered["ocupacion_ciuo08cl_glosa"].isin(selected_occupations)
     ]
