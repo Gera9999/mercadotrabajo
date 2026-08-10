@@ -456,10 +456,16 @@ if page == "Panorama":
                 labels={"periodo": "Mes", "anuncios_empleo": "Avisos"},
                 color_discrete_sequence=["#087e72"],
             )
-            figure.update_traces(text=monthly["anuncios_empleo"], textposition="top center")
+            figure.update_traces(
+                mode="lines+markers+text",
+                text=monthly["anuncios_empleo"],
+                texttemplate="%{text}",
+                textposition="top center",
+                cliponaxis=False,
+            )
             figure.update_layout(
                 height=360,
-                margin=dict(l=10, r=10, t=20, b=18),
+                margin=dict(l=10, r=10, t=28, b=18),
                 plot_bgcolor="#fffaf6",
                 paper_bgcolor="rgba(0,0,0,0)",
             )
@@ -542,10 +548,16 @@ if page == "Demanda":
                 labels={"periodo": "Mes", "anuncios_empleo": "Avisos"},
                 color_discrete_sequence=["#d86f40"],
             )
-            trend.update_traces(text=demand_monthly["anuncios_empleo"], textposition="top center")
+            trend.update_traces(
+                mode="lines+markers+text",
+                text=demand_monthly["anuncios_empleo"],
+                texttemplate="%{text}",
+                textposition="top center",
+                cliponaxis=False,
+            )
             trend.update_layout(
                 height=360,
-                margin=dict(l=10, r=10, t=20, b=18),
+                margin=dict(l=10, r=10, t=28, b=18),
                 plot_bgcolor="#fffaf6",
                 paper_bgcolor="rgba(0,0,0,0)",
             )
