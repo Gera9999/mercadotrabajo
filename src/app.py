@@ -59,6 +59,14 @@ st.markdown(
     .metric-card__label { color: var(--muted); font-size: .85rem; font-weight: 600; }
     .metric-card__value { color: #bb572b; font-family: "Aptos Display", sans-serif; font-size: clamp(1.02rem, 1.8vw, 1.6rem); line-height: 1.05; font-weight: 700; }
     .metric-card__caption { color: var(--muted); font-size: .78rem; margin-top: .25rem; }
+    [data-testid="stPopover"] {
+        position: fixed;
+        right: 1.15rem;
+        bottom: 5.2rem;
+        z-index: 9998;
+        width: fit-content !important;
+        max-width: 360px;
+    }
     [data-testid="stPopoverButton"] {
         position: fixed;
         right: 1.15rem;
@@ -78,6 +86,11 @@ st.markdown(
         min-width: 0 !important;
         white-space: nowrap;
         padding-inline: .85rem;
+    }
+    [data-testid="stPopover"] [data-testid="stPopoverButton"] {
+        position: static;
+        right: auto;
+        bottom: auto;
     }
     [data-testid="stPopoverButton"] button:hover {
         background: #1d2740;
