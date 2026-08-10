@@ -1,5 +1,7 @@
 # Radar Laboral Regional
 
+**Reporte para evaluación:** [Diagnóstico crítico y propuesta de reconstrucción](docs/reporte_tecnico.md). El documento responde explícitamente los criterios de las partes A y B, con una propuesta centrada en escalar el tablero a múltiples regiones y sostenerlo en el tiempo.
+
 Solución Vía B de la prueba técnica: ETL reproducible en Python y tablero interactivo en Streamlit/Plotly para integrar demanda laboral, inversión pública, ocupaciones prioritarias y cursos disponibles.
 
 **Aplicación publicada:** [mercadotrabajo.streamlit.app](https://mercadotrabajo.streamlit.app/)
