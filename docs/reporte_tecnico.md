@@ -22,7 +22,7 @@ Primero, fuentes y presentación acopladas obligan a rehacer cada tablero region
 
 ### B.1 Flujo de datos mantenible, escalable y actualizable
 
-Propongo una arquitectura por capas: fuentes inmutables en `data/raw`; una zona de entrada por región y periodo; ETL con pandas que valida esquema, normaliza y registra metadatos; productos curados en `data/processed`; y Streamlit/Plotly como presentación. `codigo_ciuo` es una dimensión conformada para demanda, recomendaciones y cursos; región y periodo son dimensiones obligatorias. Esta estructura permite incorporar una región mediante datos parametrizados y configuración, no mediante una copia del tablero o del código.
+Propongo una Arquitectura Medallón adaptada (por capas): fuentes inmutables en data/raw (Capa Bronze); ETL con pandas que valida esquemas, normaliza y registra metadatos (Capa Silver); productos curados e integrados en data/processed (Capa Gold); y Streamlit/Plotly en la capa de presentación. codigo_ciuo actúa como una dimensión conformada para demanda, recomendaciones y cursos, mientras que region y periodo son dimensiones obligatorias. Esta estructura permite incorporar nuevas regiones mediante parametrización de datos y archivos de configuración, sin duplicar código ni crear tableros paralelos.
 
 ### B.2 Herramientas y tecnologías de código abierto
 
@@ -34,7 +34,7 @@ La capa de presentación no debe modificar fuentes ni contener lógica de limpie
 
 ### B.4 Automatización y puesta en producción
 
-En producción, un job programado detectaría archivos en SharePoint o Drive mediante API, los copiaría a una zona de entrada, ejecutaría validaciones y publicaría salidas atómicamente sólo al aprobar. Un contenedor desplegado detrás de HTTPS y autenticación institucional serviría Streamlit para consulta web de autoridades; logs, alertas, secretos gestionados y versionado de artefactos completarían la operación. Una actualización fallida conservaría la versión anterior, sin depender del envío manual de archivos.
+En producción, la ingesta y el despliegue se gestionan mediante un pipeline de CI/CD (ej. mediante GitHub Actions o un orquestador de tareas) que detecta nuevos archivos en SharePoint o Drive vía API, ejecuta pruebas unitarias/de calidad (pytest) y actualiza las salidas de forma atómica solo tras aprobar los controles. Un contenedor Docker desplegado tras un proxy HTTPS con autenticación institucional sirve la aplicación de Streamlit para consulta web. La operación se complementa con gestión de secretos, trazabilidad de logs y versionado de artefactos; si los nuevos datos fallan en las validaciones, el pipeline cancela la ejecución y mantiene activa la versión estable anterior, eliminando la dependencia de procesos manuales.
 
 ### B.5 Uso de inteligencia artificial con resguardos
 
