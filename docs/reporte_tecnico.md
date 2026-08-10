@@ -1,6 +1,6 @@
 # Reporte técnico de la plataforma de BI
 
-## Parte A · Diagnóstico crítico del tablero (40 puntos)
+## Parte A · Diagnóstico crítico del tablero
 
 ### A.1 Calidad de los datos
 
@@ -18,7 +18,7 @@ El ranking mezcla prioridad, demanda y cursos sin explicar si la prioridad provi
 
 Primero, fuentes y presentación acopladas obligan a rehacer cada tablero regional, afectando al equipo mantenedor y haciendo inviable incorporar regiones de manera sostenible. Segundo, reemplazos manuales carecen de validaciones y pueden publicar columnas cambiadas o datos parciales, afectando decisiones de compra de las autoridades. Tercero, no se exhiben fecha de actualización, linaje ni controles, lo que afecta a autoridades y auditoría al impedir evaluar vigencia y confiabilidad. Cuarto, los 77 nulos salariales del corte base y textos como “55 avisos” pueden sesgar indicadores o romper cargas si se convierten silenciosamente, afectando tanto a analistas como a quienes toman decisiones basadas en esos indicadores.
 
-## Parte B · Propuesta de mejora o reconstrucción (60 puntos)
+## Parte B · Propuesta de mejora o reconstrucción
 
 ### B.1 Flujo de datos mantenible, escalable y actualizable
 
