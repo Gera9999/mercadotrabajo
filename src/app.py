@@ -66,11 +66,22 @@ st.markdown(
         z-index: 9998;
         box-shadow: 0 10px 25px rgba(93, 61, 42, .16);
         border-radius: 999px;
+        width: fit-content !important;
+        max-width: fit-content !important;
     }
     [data-testid="stPopoverButton"] button {
         border-radius: 999px;
-        border: 1px solid #e4a57f;
-        background: #fff4ed;
+        border: 1px solid #27334a;
+        background: #27334a;
+        color: #ffffff;
+        width: auto !important;
+        min-width: 0 !important;
+        white-space: nowrap;
+        padding-inline: .85rem;
+    }
+    [data-testid="stPopoverButton"] button:hover {
+        background: #1d2740;
+        border-color: #1d2740;
     }
     h1, h2, h3 { color: var(--ink); letter-spacing: 0; }
     h1 { font-family: "Aptos Display", sans-serif; font-size: 2.15rem !important; }
