@@ -1,0 +1,121 @@
+Servicio;Region;Comuna;Tipo Obra;Nombre Contrato;Estado;Monto Vigente Contrato;F Inicio;F Termino
+Direccion de Obras;Region Ejemplo;Villa Sur;Alcantarillado;CONTRATO OP-1000;En Ejecucion;1.013.912;10-03-2026;29-08-2027
+Direccion de Obras;Region Ejemplo;Costa Blanca;Edificacion Publica;CONTRATO OP-1001;Por Licitar;3.619.336;11-02-2027;15-01-2029
+Direccion de Obras;Region Ejemplo;Las Terrazas;Agua Potable Rural;CONTRATO OP-1002;En Adjudicacion;3.599.187;28-10-2026;09-08-2027
+Direccion de Obras;Region Ejemplo;San Bernardo del Valle;Agua Potable Rural;CONTRATO OP-1003;Por Licitar;1.384.256;02/12/2026;03-08-2028
+Direccion de Obras;Region Ejemplo;Villa Sur;Alcantarillado;CONTRATO OP-1004;En Adjudicacion;2.298.961;15-11-2026;27-09-2028
+Direccion de Obras;Region Ejemplo;Bajo Rio;Vialidad;CONTRATO OP-1005;Adjudicado;3.113.614;11-11-2026;03-08-2028
+Direccion de Obras;Region Ejemplo;San Bernardo del Valle;Agua Potable Rural;CONTRATO OP-1006;Adjudicado;927.261;06-09-2026;07-03-2027
+Direccion de Obras;Region Ejemplo;Costa Blanca;Edificacion Publica;CONTRATO OP-1007;Adjudicado;2.319.572;24-10-2026;13-07-2027
+Direccion de Obras;Region Ejemplo;Alto Llano;Vialidad;CONTRATO OP-1008;En Adjudicacion;3.957.719;21-08-2026;08-12-2027
+Direccion de Obras;Region Ejemplo;Alto Llano;Obras Portuarias;CONTRATO OP-1009;En Licitacion;3.445.214;03-05-2027;07-02-2028
+Direccion de Obras;Region Ejemplo;Cerro Verde;Obras Portuarias;CONTRATO OP-1010;Por Licitar;3.929.128;29-01-2027;08-08-2027
+Direccion de Obras;Region Ejemplo;Villa Norte;Vialidad;CONTRATO OP-1011;Adjudicado;3.430.414;19-11-2026;01-10-2028
+Direccion de Obras;Region Ejemplo;Las Terrazas;Alcantarillado;CONTRATO OP-1012;En Licitacion;1.422.026;28-03-2027;10-08-2028
+Direccion de Obras;Region Ejemplo;San Bernardo del Valle;Vialidad;CONTRATO OP-1013;En Adjudicacion;2.189.014;02-09-2026;10-04-2028
+Direccion de Obras;Region Ejemplo;Costa Blanca;Edificacion Publica;CONTRATO OP-1014;Por Licitar;3.727.075;09-12-2026;28-05-2028
+Direccion de Obras;Region Ejemplo;Puerto Centro;Agua Potable Rural;CONTRATO OP-1015;Adjudicado;972.638;03-12-2026;31-05-2028
+Direccion de Obras;Region Ejemplo;Bajo Rio;Edificacion Publica;CONTRATO OP-1016;En Ejecucion;84.797;23-03-2025;26-10-2027
+Direccion de Obras;Region Ejemplo;Costa Blanca;Edificacion Publica;CONTRATO OP-1017;Adjudicado;2.100.577;10-11-2026;15-10-2028
+Direccion de Obras;Region Ejemplo;Alto Llano;Alcantarillado;CONTRATO OP-1018;Adjudicado;4.066.957;27-10-2026;12-07-2027
+Direccion de Obras;Region Ejemplo;Villa Sur;Edificacion Publica;CONTRATO OP-1019;Adjudicado;2.694.865;07-11-2026;18-04-2028
+Direccion de Obras;Region Ejemplo;Villa Sur;Vialidad;CONTRATO OP-1020;Adjudicado;617.088;18-08-2026;10-12-2027
+Direccion de Obras;Region Ejemplo;El Mirador;Edificacion Publica;CONTRATO OP-1021;Por Licitar;645.394;18-12-2026;26-09-2028
+Direccion de Obras;Region Ejemplo;Alto Llano;Vialidad;CONTRATO OP-1022;En Ejecucion;1.189.912;26-02-2026;19-05-2028
+Direccion de Obras;Region Ejemplo;Villa Sur;Vialidad;CONTRATO OP-1023;En Licitacion;3.695.919;24-12-2026;17-07-2027
+Direccion de Obras;Region Ejemplo;Puerto Centro;Obras Portuarias;CONTRATO OP-1024;Adjudicado;2.926.276;23-11-2026;02-06-2028
+Direccion de Obras;Region Ejemplo;Villa Norte;Alcantarillado;CONTRATO OP-1025;En Ejecucion;2.416.606;04/11/2025;21-01-2028
+Direccion de Obras;Region Ejemplo;Alto Llano;Obras Portuarias;CONTRATO OP-1026;En Ejecucion;862.344;05-10-2025;06-01-2027
+Direccion de Obras;Region Ejemplo;Las Terrazas;Alcantarillado;CONTRATO OP-1027;En Licitacion;1.461.076;16-01-2027;06-12-2028
+Direccion de Obras;Region Ejemplo;San Bernardo del Valle;Vialidad;CONTRATO OP-1028;En Ejecucion;1.378.529;19-02-2025;02-02-2027
+Direccion de Obras;Region Ejemplo;Puerto Centro;Vialidad;CONTRATO OP-1029;Por Licitar;4.079.591;22/01/2027;20-12-2028
+Direccion de Obras;Region Ejemplo;Cerro Verde;Alcantarillado;CONTRATO OP-1030;En Ejecucion;650.097;25-03-2025;11-06-2028
+Direccion de Obras;Region Ejemplo;Alto Llano;Agua Potable Rural;CONTRATO OP-1031;En Licitacion;767.726;08-02-2027;17-09-2028
+Direccion de Obras;Region Ejemplo;Villa Norte;Obras Portuarias;CONTRATO OP-1032;Por Licitar;1.177.886;17-02-2027;06-05-2028
+Direccion de Obras;Region Ejemplo;San Bernardo del Valle;Vialidad;CONTRATO OP-1033;Adjudicado;918.703;23-11-2026;25-07-2028
+Direccion de Obras;Region Ejemplo;Cerro Verde;Alcantarillado;CONTRATO OP-1034;En Ejecucion;3.179.817;25-07-2025;08-02-2028
+Direccion de Obras;Region Ejemplo;Costa Blanca;Edificacion Publica;CONTRATO OP-1035;En Adjudicacion;2.591.370;11-10-2026;20-09-2028
+Direccion de Obras;Region Ejemplo;Costa Blanca;Obras Portuarias;CONTRATO OP-1036;En Adjudicacion;2.443.542;18-11-2026;11-06-2027
+Direccion de Obras;Region Ejemplo;Villa Norte;Agua Potable Rural;CONTRATO OP-1037;Adjudicado;506.132;19-10-2026;02-12-2027
+Direccion de Obras;Region Ejemplo;Costa Blanca;Vialidad;CONTRATO OP-1038;En Ejecucion;2.277.440;12-04-2025;15-02-2027
+Direccion de Obras;Region Ejemplo;Las Terrazas;Edificacion Publica;CONTRATO OP-1039;En Ejecucion;711.191;17-03-2025;25-11-2026
+Direccion de Obras;Region Ejemplo;Villa Sur;Agua Potable Rural;CONTRATO OP-1040;Por Licitar;2.665.858;04-04-2027;19-03-2029
+Direccion de Obras;Region Ejemplo;Las Terrazas;Vialidad;CONTRATO OP-1041;Adjudicado;3.488.940;28-11-2026;09-09-2027
+Direccion de Obras;Region Ejemplo;Las Terrazas;Vialidad;CONTRATO OP-1042;En Licitacion;2.866.573;07-04-2027;16-12-2028
+Direccion de Obras;Region Ejemplo;Villa Norte;Edificacion Publica;CONTRATO OP-1043;En Licitacion;1.945.909;03-02-2027;25-12-2027
+Direccion de Obras;Region Ejemplo;Costa Blanca;Agua Potable Rural;CONTRATO OP-1044;En Ejecucion;2.833.660;05-09-2025;28-05-2027
+Direccion de Obras;Region Ejemplo;San Bernardo del Valle;Agua Potable Rural;CONTRATO OP-1045;En Licitacion;1.047.556;06-11-2026;14-08-2028
+Direccion de Obras;Region Ejemplo;Villa Norte;Alcantarillado;CONTRATO OP-1046;Por Licitar;4.370.127;27-03-2027;15-01-2029
+Direccion de Obras;Region Ejemplo;Villa Sur;Agua Potable Rural;CONTRATO OP-1047;Por Licitar;1.732.850;06-04-2027;16-06-2028
+Direccion de Obras;Region Ejemplo;Costa Blanca;Edificacion Publica;CONTRATO OP-1048;Adjudicado;2.674.467;17-10-2026;30-05-2028
+Direccion de Obras;Region Ejemplo;Las Terrazas;Alcantarillado;CONTRATO OP-1049;En Ejecucion;3.606.959;01-06-2025;17-08-2027
+Direccion de Obras;Region Ejemplo;El Mirador;Obras Portuarias;CONTRATO OP-1050;En Licitacion;2.629.087;23-02-2027;16-01-2029
+Direccion de Obras;Region Ejemplo;Costa Blanca;Alcantarillado;CONTRATO OP-1051;En Adjudicacion;1.872.657;04-11-2026;04-09-2028
+Direccion de Obras;Region Ejemplo;Villa Norte;Vialidad;CONTRATO OP-1052;Adjudicado;863.388;18-11-2026;01-07-2028
+Direccion de Obras;Region Ejemplo;Las Terrazas;Obras Portuarias;CONTRATO OP-1053;En Licitacion;4.065.732;24-01-2027;15-02-2028
+Direccion de Obras;Region Ejemplo;Alto Llano;Edificacion Publica;CONTRATO OP-1054;Por Licitar;2.126.689;20-12-2026;19-03-2028
+Direccion de Obras;Region Ejemplo;Puerto Centro;Obras Portuarias;CONTRATO OP-1055;Por Licitar;3.976.926;08-10-2026;09-05-2027
+Direccion de Obras;Region Ejemplo;Puerto Centro;Obras Portuarias;CONTRATO OP-1056;En Licitacion;2.741.688;13-11-2026;23-08-2028
+Direccion de Obras;Region Ejemplo;Alto Llano;Agua Potable Rural;CONTRATO OP-1057;En Licitacion;2.254.256;29-04-2027;13-04-2029
+Direccion de Obras;Region Ejemplo;Costa Blanca;Vialidad;CONTRATO OP-1058;Adjudicado;729.977;03-12-2026;14-10-2028
+Direccion de Obras;Region Ejemplo;Las Terrazas;Obras Portuarias;CONTRATO OP-1059;En Adjudicacion;1.345.259;22-09-2026;11-10-2027
+Direccion de Obras;Region Ejemplo;Cerro Verde;Vialidad;CONTRATO OP-1060;Por Licitar;3.988.456;11-12-2026;18-10-2028
+Direccion de Obras;Region Ejemplo;Costa Blanca;Alcantarillado;CONTRATO OP-1061;Por Licitar;3.270.867;02-02-2027;05-01-2029
+Direccion de Obras;Region Ejemplo;Las Terrazas;Agua Potable Rural;CONTRATO OP-1062;En Licitacion;1.930.012;20-04-2027;09-03-2029
+Direccion de Obras;Region Ejemplo;Las Terrazas;Alcantarillado;CONTRATO OP-1063;Por Licitar;1.464.495;30-04-2027;13-01-2029
+Direccion de Obras;Region Ejemplo;Villa Norte;Agua Potable Rural;CONTRATO OP-1064;En Licitacion;307.348;25/02/2027;27-09-2027
+Direccion de Obras;Region Ejemplo;Las Terrazas;Agua Potable Rural;CONTRATO OP-1065;En Ejecucion;2.826.033;10-03-2025;30-07-2027
+Direccion de Obras;Region Ejemplo;Villa Norte;Vialidad;CONTRATO OP-1066;Adjudicado;4.025.219;16-09-2026;25-06-2028
+Direccion de Obras;Region Ejemplo;Villa Sur;Alcantarillado;CONTRATO OP-1067;Adjudicado;1.752.358;02-12-2026;08-09-2027
+Direccion de Obras;Region Ejemplo;Puerto Centro;Agua Potable Rural;CONTRATO OP-1068;En Ejecucion;3.980.987;27-09-2025;16-03-2028
+Direccion de Obras;Region Ejemplo;Villa Sur;Alcantarillado;CONTRATO OP-1069;Adjudicado;295.406;09-09-2026;13-06-2028
+Direccion de Obras;Region Ejemplo;San Bernardo del Valle;Alcantarillado;CONTRATO OP-1070;En Licitacion;934.810;21-11-2026;28-07-2028
+Direccion de Obras;Region Ejemplo;Villa Sur;Obras Portuarias;CONTRATO OP-1071;En Adjudicacion;3.188.573;22/11/2026;22-09-2028
+Direccion de Obras;Region Ejemplo;Cerro Verde;Alcantarillado;CONTRATO OP-1072;En Licitacion;3.936.573;22-10-2026;17-01-2028
+Direccion de Obras;Region Ejemplo;Bajo Rio;Obras Portuarias;CONTRATO OP-1073;Adjudicado;3.979.643;30-11-2026;20-10-2028
+Direccion de Obras;Region Ejemplo;San Bernardo del Valle;Edificacion Publica;CONTRATO OP-1074;En Licitacion;3.978.257;08-01-2027;13-10-2027
+Direccion de Obras;Region Ejemplo;Costa Blanca;Vialidad;CONTRATO OP-1075;Por Licitar;1.859.390;24-11-2026;17-07-2028
+Direccion de Obras;Region Ejemplo;El Mirador;Obras Portuarias;CONTRATO OP-1076;En Licitacion;1.682.697;12-11-2026;13-08-2028
+Direccion de Obras;Region Ejemplo;Bajo Rio;Alcantarillado;CONTRATO OP-1077;En Adjudicacion;224.646;02/12/2026;14-06-2027
+Direccion de Obras;Region Ejemplo;San Bernardo del Valle;Obras Portuarias;CONTRATO OP-1078;En Adjudicacion;4.049.996;18-08-2026;14-02-2027
+Direccion de Obras;Region Ejemplo;Villa Sur;Alcantarillado;CONTRATO OP-1079;Adjudicado;2.652.140;03-10-2026;25-06-2027
+Direccion de Obras;Region Ejemplo;Villa Sur;Edificacion Publica;CONTRATO OP-1080;En Adjudicacion;1.686.762;24-10-2026;11-11-2027
+Direccion de Obras;Region Ejemplo;Bajo Rio;Vialidad;CONTRATO OP-1081;En Ejecucion;1.988.267;03-01-2026;06-02-2027
+Direccion de Obras;Region Ejemplo;El Mirador;Obras Portuarias;CONTRATO OP-1082;En Licitacion;2.530.619;13-03-2027;24-10-2027
+Direccion de Obras;Region Ejemplo;Villa Sur;Obras Portuarias;CONTRATO OP-1083;En Licitacion;2.938.048;16/04/2027;13-07-2028
+Direccion de Obras;Region Ejemplo;Villa Sur;Edificacion Publica;CONTRATO OP-1084;En Ejecucion;701.446;01-06-2025;06-10-2027
+Direccion de Obras;Region Ejemplo;El Mirador;Obras Portuarias;CONTRATO OP-1085;En Adjudicacion;3.571.120;26-08-2026;27-02-2027
+Direccion de Obras;Region Ejemplo;Alto Llano;Edificacion Publica;CONTRATO OP-1086;En Adjudicacion;3.677.285;16-09-2026;30-07-2028
+Direccion de Obras;Region Ejemplo;Villa Norte;Obras Portuarias;CONTRATO OP-1087;En Licitacion;761.049;31-03-2027;12-02-2028
+Direccion de Obras;Region Ejemplo;El Mirador;Vialidad;CONTRATO OP-1088;Adjudicado;4.021.911;15-10-2026;27-11-2027
+Direccion de Obras;Region Ejemplo;Puerto Centro;Agua Potable Rural;CONTRATO OP-1089;Adjudicado;2.299.245;06/10/2026;16-08-2027
+Direccion de Obras;Region Ejemplo;El Mirador;Vialidad;CONTRATO OP-1090;En Licitacion;679.029;08-03-2027;01-02-2029
+Direccion de Obras;Region Ejemplo;El Mirador;Vialidad;CONTRATO OP-1091;Por Licitar;2.630.901;19/12/2026;11-09-2027
+Direccion de Obras;Region Ejemplo;Villa Sur;Edificacion Publica;CONTRATO OP-1092;Por Licitar;414.376;20-01-2027;29-12-2027
+Direccion de Obras;Region Ejemplo;El Mirador;Alcantarillado;CONTRATO OP-1093;En Licitacion;254.025;09-11-2026;16-03-2028
+Direccion de Obras;Region Ejemplo;El Mirador;Agua Potable Rural;CONTRATO OP-1094;En Licitacion;2.413.346;12-02-2027;05-10-2028
+Direccion de Obras;Region Ejemplo;Las Terrazas;Obras Portuarias;CONTRATO OP-1095;En Adjudicacion;2.875.993;25-09-2026;23-08-2027
+Direccion de Obras;Region Ejemplo;Bajo Rio;Agua Potable Rural;CONTRATO OP-1096;En Ejecucion;3.439.236;16-08-2025;25-04-2027
+Direccion de Obras;Region Ejemplo;Las Terrazas;Vialidad;CONTRATO OP-1097;Adjudicado;3.470.466;24-09-2026;06-04-2027
+Direccion de Obras;Region Ejemplo;Alto Llano;Agua Potable Rural;CONTRATO OP-1098;Por Licitar;4.428.984;02-11-2026;02-06-2028
+Direccion de Obras;Region Ejemplo;Puerto Centro;Agua Potable Rural;CONTRATO OP-1099;Por Licitar;1.179.018;24-10-2026;13-06-2027
+Direccion de Obras;Region Ejemplo;Villa Sur;Edificacion Publica;CONTRATO OP-1100;En Licitacion;194.709;02-01-2027;26-06-2028
+Direccion de Obras;Region Ejemplo;Alto Llano;Obras Portuarias;CONTRATO OP-1101;Por Licitar;2.528.312;21-04-2027;13-11-2027
+Direccion de Obras;Region Ejemplo;Las Terrazas;Agua Potable Rural;CONTRATO OP-1102;Por Licitar;1.293.344;12-10-2026;13-09-2028
+Direccion de Obras;Region Ejemplo;Puerto Centro;Obras Portuarias;CONTRATO OP-1103;Por Licitar;2.321.206;04-02-2027;03-07-2028
+Direccion de Obras;Region Ejemplo;Alto Llano;Alcantarillado;CONTRATO OP-1104;En Licitacion;4.142.950;29-03-2027;31-07-2028
+Direccion de Obras;Region Ejemplo;Las Terrazas;Obras Portuarias;CONTRATO OP-1105;Adjudicado;2.039.263;03-10-2026;28-02-2028
+Direccion de Obras;Region Ejemplo;Villa Sur;Alcantarillado;CONTRATO OP-1106;En Licitacion;4.235.117;06-11-2026;25-09-2028
+Direccion de Obras;Region Ejemplo;Villa Sur;Obras Portuarias;CONTRATO OP-1107;En Adjudicacion;208.744;05-10-2026;24-09-2027
+Direccion de Obras;Region Ejemplo;Costa Blanca;Obras Portuarias;CONTRATO OP-1108;En Adjudicacion;2.920.057;26-08-2026;07-08-2028
+Direccion de Obras;Region Ejemplo;Bajo Rio;Edificacion Publica;CONTRATO OP-1109;En Ejecucion;4.173.200;24-01-2026;24-12-2027
+Direccion de Obras;Region Ejemplo;Villa Norte;Vialidad;CONTRATO OP-1110;En Adjudicacion;3.720.416;25-10-2026;01-04-2028
+Direccion de Obras;Region Ejemplo;Costa Blanca;Obras Portuarias;CONTRATO OP-1111;Por Licitar;550.762;31-01-2027;24-03-2028
+Direccion de Obras;Region Ejemplo;El Mirador;Alcantarillado;CONTRATO OP-1112;Adjudicado;1.590.426;01-11-2026;10-07-2027
+Direccion de Obras;Region Ejemplo;El Mirador;Agua Potable Rural;CONTRATO OP-1113;Por Licitar;2.027.737;23-02-2027;03-10-2028
+Direccion de Obras;Region Ejemplo;Bajo Rio;Obras Portuarias;CONTRATO OP-1114;En Adjudicacion;1.405.195;11-08-2026;26-08-2027
+Direccion de Obras;Region Ejemplo;Cerro Verde;Agua Potable Rural;CONTRATO OP-1115;En Adjudicacion;1.751.153;28-10-2026;20-10-2027
+Direccion de Obras;Region Ejemplo;Cerro Verde;Obras Portuarias;CONTRATO OP-1116;En Adjudicacion;264.042;12-08-2026;29-03-2027
+Direccion de Obras;Region Ejemplo;Puerto Centro;Vialidad;CONTRATO OP-1117;En Ejecucion;2.010.372;20-09-2025;17-04-2027
+Direccion de Obras;Region Ejemplo;Villa Sur;Agua Potable Rural;CONTRATO OP-1118;En Adjudicacion;2.671.516;07-10-2026;25-04-2027
+Direccion de Obras;Region Ejemplo;Costa Blanca;Alcantarillado;CONTRATO OP-1119;En Adjudicacion;3.565.492;23-08-2026;30-09-2027

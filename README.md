@@ -1,2 +1,106 @@
-# mercadotrabajo
-Analisis del Mercado del trabajo
+# Radar Laboral Regional
+
+Solución Vía B de la prueba técnica: ETL reproducible en Python y tablero interactivo en Streamlit/Plotly para integrar demanda laboral, inversión pública, ocupaciones prioritarias y cursos disponibles.
+
+> Todos los datos son ficticios y corresponden a una región de ejemplo.
+
+## Resultado
+
+El proyecto conecta cuatro fuentes base y permite demostrar la actualización central de la Tarea 4 con un quinto archivo que agrega mayo de 2026. El selector **Fuente de avisos** cambia entre el corte original y el actualizado sin modificar código ni rehacer transformaciones.
+
+Indicadores de control del corte base:
+
+| Indicador | Resultado |
+|---|---:|
+| Obras | 120 |
+| Inversión total | $274.534.765 |
+| Registros de avisos | 160 |
+| Avisos acumulados | 7.287 |
+| Ocupaciones prioritarias | 10 |
+| Cursos | 17 |
+
+Con la actualización de mayo, los registros de avisos aumentan de 160 a 170 y el máximo periodo pasa de abril a mayo de 2026. Obras, recomendaciones y cursos no cambian.
+
+## Estructura
+
+```text
+mercado_del_trabajo/
+├── data/
+│   ├── raw/                 # Fuentes originales, nunca editadas manualmente
+│   └── processed/           # Salidas generadas por el ETL
+├── docs/
+│   ├── reference/           # Pauta y rúbrica originales
+│   ├── diseno_estructura.md
+│   ├── matriz_rubrica.md
+│   └── reporte_tecnico.md
+├── src/
+│   ├── etl.py               # Lectura, limpieza, validación, modelo y exportación
+│   └── app.py               # Presentación interactiva
+├── tests/test_etl.py        # Regresión de limpieza y actualización
+├── requirements.txt
+└── requirements-dev.txt
+```
+
+## Instalación
+
+Requiere Python 3.12.
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install -r requirements-dev.txt
+```
+
+## Ejecutar el ETL
+
+Corte original:
+
+```powershell
+python src/etl.py
+```
+
+Actualización de mayo sin tocar el código:
+
+```powershell
+python src/etl.py --avisos-file 02_avisos_empleo_ACTUALIZADO_mayo.xlsx
+```
+
+También puede parametrizarse con `AVISOS_FILE`. El pipeline genera cinco CSV procesados y `etl_metadata.json` en `data/processed/`.
+
+## Revisar el tablero
+
+```powershell
+streamlit run src/app.py
+```
+
+Abra `http://localhost:8501`. En la barra lateral:
+
+1. Seleccione **Base · hasta abril 2026** y compruebe el último periodo.
+2. Cambie a **Actualizado · hasta mayo 2026**; la serie temporal y los KPI se recalculan.
+3. Use los filtros de región, periodo, estado de obra y ocupación.
+4. Revise las vistas **Inversión** y **Capacitación**, que responden las dos preguntas elegidas de la pauta.
+
+## Verificación
+
+```powershell
+python -m pytest -q
+python -m compileall -q src tests
+```
+
+Las pruebas confirman tipos, fechas, cruce uno-a-muchos por CIUO y que mayo agrega exactamente 10 registros sin alterar las demás fuentes ni los 160 registros anteriores.
+
+## Decisiones de limpieza
+
+- Los montos eliminan el punto usado como separador de miles y se almacenan como enteros.
+- Las fechas mezcladas con `/` y `-` se interpretan con día primero y `format="mixed"`.
+- Los meses abreviados en español se convierten a una fecha mensual normalizada.
+- Valores como `55 avisos` se extraen y validan como enteros.
+- Los códigos CIUO se modelan como texto para preservar su rol de identificador.
+- Las remuneraciones ausentes se mantienen nulas y se marcan con `remuneracion_informada`; no se inventan valores sin fundamento.
+- Recomendaciones y cursos se unen por `codigo_ciuo` con cardinalidad uno-a-muchos validada.
+
+## Actualización y despliegue
+
+Para una carpeta compartida, un job programado descargaría o montaría las fuentes, ejecutaría pruebas y ETL, publicaría las salidas de forma atómica y reiniciaría la app solo si los controles pasan. GitHub Actions, un cron institucional o un orquestador como Prefect pueden ejecutar el proceso. Streamlit Community Cloud sirve para demostración; producción institucional requiere contenedor, autenticación, HTTPS, logs y almacenamiento gestionado.
+
+El análisis completo, limitaciones y propuesta se encuentran en [docs/reporte_tecnico.md](docs/reporte_tecnico.md). El diseño obligatorio está en [docs/diseno_estructura.md](docs/diseno_estructura.md).

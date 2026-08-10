@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+.streamlit/secrets.toml
+data/processed/*.csv
+data/processed/*.json
+data/processed/base/
+data/processed/mayo/

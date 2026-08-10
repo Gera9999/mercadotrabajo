@@ -1,0 +1,18 @@
+codigo_plan,nombre_plan,nivel,cupos,codigo_ciuo
+PLAN-101,Curso de Conductores de camiones,Avanzado,50,8332
+PLAN-102,Curso de Conductores de camiones,Intermedio,25,8332
+PLAN-103,Curso de Auxiliares de aseo,Avanzado,50,9112
+PLAN-104,Curso de Auxiliares de aseo,Basico,25,9112
+PLAN-105,Curso de Auxiliares de aseo,Intermedio,50,9112
+PLAN-106,Curso de Soldadores,Basico,50,7212
+PLAN-107,Curso de Guardias de seguridad,Intermedio,25,5414
+PLAN-108,Curso de Ayudantes de cocina,Intermedio,25,9412
+PLAN-109,Curso de Electricistas de obra,Avanzado,30,7411
+PLAN-110,Curso de Electricistas de obra,Basico,30,7411
+PLAN-111,Curso de Operadores de maquinaria movimiento tierra,Avanzado,50,8342
+PLAN-112,Curso de Garzones,Basico,30,5131
+PLAN-113,Curso de Garzones,Avanzado,50,5131
+PLAN-114,Curso de Vendedores,Avanzado,25,5223
+PLAN-115,Curso de Gasfiter,Avanzado,25,7126
+PLAN-116,Curso de Gasfiter,Basico,50,7126
+PLAN-117,Curso de Gasfiter,Avanzado,50,7126

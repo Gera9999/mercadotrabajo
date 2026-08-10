@@ -1,0 +1,1 @@
+"""Componentes del pipeline y tablero de mercado laboral."""
