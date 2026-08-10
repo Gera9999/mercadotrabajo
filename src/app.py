@@ -290,9 +290,14 @@ with st.sidebar:
         key="period_filter",
     )
     statuses = sorted(obras.loc[obras["region"].eq(region), "estado"].unique())
-    selected_statuses = st.multiselect(
-        "Estado de obra", statuses, default=statuses, key="status_filter"
-    )
+    with st.expander("Estado de obra", expanded=False):
+        st.caption("Seleccione uno o más estados. Este filtro permanece colapsado para reducir ruido visual.")
+        status_columns = st.columns(2)
+        selected_statuses = []
+        for index, status in enumerate(statuses):
+            column = status_columns[index % 2]
+            if column.checkbox(status, value=True, key=f"status_checkbox_{status}"):
+                selected_statuses.append(status)
 
 if isinstance(period, tuple) and len(period) == 2:
     selected_start, selected_end = pd.Timestamp(period[0]), pd.Timestamp(period[1])
@@ -451,7 +456,13 @@ if page == "Panorama":
                 labels={"periodo": "Mes", "anuncios_empleo": "Avisos"},
                 color_discrete_sequence=["#087e72"],
             )
-            figure.update_layout(height=360, margin=dict(l=10, r=10, t=20, b=10))
+            figure.update_traces(text=monthly["anuncios_empleo"], textposition="top center")
+            figure.update_layout(
+                height=360,
+                margin=dict(l=10, r=10, t=20, b=18),
+                plot_bgcolor="#fffaf6",
+                paper_bgcolor="rgba(0,0,0,0)",
+            )
             st.plotly_chart(figure, width="stretch")
     with right:
         top_demand = (
@@ -531,9 +542,10 @@ if page == "Demanda":
                 labels={"periodo": "Mes", "anuncios_empleo": "Avisos"},
                 color_discrete_sequence=["#d86f40"],
             )
+            trend.update_traces(text=demand_monthly["anuncios_empleo"], textposition="top center")
             trend.update_layout(
                 height=360,
-                margin=dict(l=10, r=10, t=20, b=10),
+                margin=dict(l=10, r=10, t=20, b=18),
                 plot_bgcolor="#fffaf6",
                 paper_bgcolor="rgba(0,0,0,0)",
             )
