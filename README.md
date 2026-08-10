@@ -36,6 +36,7 @@ mercado_del_trabajo/
 ├── src/
 │   ├── etl.py               # Lectura, limpieza, validación, modelo y exportación
 │   └── app.py               # Presentación interactiva
+├── streamlit_app.py          # Entrada para Streamlit Community Cloud
 ├── tests/test_etl.py        # Regresión de limpieza y actualización
 ├── requirements.txt
 └── requirements-dev.txt
@@ -70,7 +71,7 @@ También puede parametrizarse con `AVISOS_FILE`. El pipeline genera cinco CSV pr
 ## Revisar el tablero
 
 ```powershell
-streamlit run src/app.py
+streamlit run streamlit_app.py
 ```
 
 Abra `http://localhost:8501`. En la barra lateral:
@@ -79,6 +80,18 @@ Abra `http://localhost:8501`. En la barra lateral:
 2. Cambie a **Actualizado · hasta mayo 2026**; la serie temporal y los KPI se recalculan.
 3. Use los filtros de región, periodo, estado de obra y ocupación.
 4. Revise las vistas **Inversión** y **Capacitación**, que responden las dos preguntas elegidas de la pauta.
+
+## Despliegue en Streamlit Community Cloud
+
+En [share.streamlit.io](https://share.streamlit.io/), cree una aplicación con estos parámetros:
+
+| Parámetro | Valor |
+|---|---|
+| Repositorio | `Gera9999/mercadotrabajo` |
+| Rama | `main` |
+| Archivo principal | `streamlit_app.py` |
+
+Community Cloud instalará automáticamente las versiones fijadas en `requirements.txt`. No se requieren secretos ni variables de entorno para ejecutar el tablero con los datos incluidos en el repositorio.
 
 ## Verificación
 
