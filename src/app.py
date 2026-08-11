@@ -29,7 +29,8 @@ st.markdown(
     }
     .stApp { background: var(--paper); color: var(--ink); }
     [data-testid="stHeader"] { background: rgba(255, 250, 246, .92); }
-    [data-testid="stToolbar"] { display: none !important; }
+    [data-testid="stToolbar"] { display: flex !important; }
+    [data-testid="stToolbar"] button:not([data-testid="collapsedControl"]) { display: none !important; }
     [data-testid="stDecoration"] { display: none !important; }
     [data-testid="stSidebar"] { background: #fff3ea; border-right: 1px solid var(--line); }
     [data-testid="stSidebar"] [role="radiogroup"] label {
