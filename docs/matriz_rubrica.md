@@ -20,9 +20,3 @@
 | `python -m compileall -q src tests` | Sin errores |
 | ETL base | 160 avisos; máximo 2026-04; inversión $274.534.765 |
 | ETL mayo | 170 avisos; máximo 2026-05; inversión sin cambios |
-
-## Pendientes externos a la solución local
-
-- Publicar la aplicación en el entorno web definitivo y registrar su URL.
-- Convertir el reporte técnico final a PDF con Calibri 11 e interlineado 1,15.
-- Exportar el diseño a PDF o adjuntarlo como anexo según el canal de entrega.
