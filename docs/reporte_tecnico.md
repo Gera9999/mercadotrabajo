@@ -1,54 +1,44 @@
 # Reporte técnico de la plataforma de BI
 
-## Parte A · Diagnóstico crítico del tablero
+### A. Diagnóstico crítico del tablero
 
-### A.1 Calidad de los datos
+**A.1 Calidad de los datos**
+El tablero comunica una síntesis útil, pero presenta problemas verificables. Rotula la inversión como “$274.534.765 miles”, mientras la suma de `Monto Vigente Contrato` es $274.534.765; si la fuente está en pesos, el término “miles” sobredimensiona el total mil veces. También señala que “un tercio” de 120 obras está en ejecución o adjudicado, cuando son 45 (37,5%), por lo que corresponde indicar “cerca de cuatro de cada diez”. El KPI de 5.486 avisos no explicita periodo ni método de cálculo; la fuente completa suma 7.287 entre enero de 2025 y abril de 2026, por lo que la cifra no es auditable desde la interfaz. Las tasas de ocupación y desocupación tampoco presentan fuente ni periodo, lo que impide reproducirlas.
 
-El tablero de ejemplo comunica una síntesis útil, pero contiene problemas verificables. Rotula la inversión como “$274.534.765 miles”, mientras la suma de `Monto Vigente Contrato` es $274.534.765; si la fuente está en pesos, “miles” sobredimensiona el total mil veces. También describe que “un tercio” de 120 obras está en ejecución o adjudicado: son 45, equivalentes a 37,5%, por lo que debe expresarse como “cerca de cuatro de cada diez”. El KPI de 5.486 avisos de doce meses no explicita meses de corte ni método; la fuente base completa suma 7.287 entre enero de 2025 y abril de 2026, de modo que la cifra no es auditable desde la interfaz. Las tasas de desocupación y ocupación tampoco tienen fuente, periodo ni tabla entregada, impidiendo reproducirlas.
+**A.2 Visualizaciones**
+La línea mensual es adecuada para mostrar tendencia, pero debe explicitar unidades y corte temporal. Las tablas extensas de obras requieren agregación previa por comuna y estado antes del detalle. Para usuarios de decisión conviene ordenar barras, usar formato de moneda compacta y asignar colores con significado consistente. Estos ajustes reducen carga cognitiva y facilitan la comparación.
 
-### A.2 Visualizaciones
+**A.3 Consistencia interna**
+El ranking mezcla prioridad, demanda y cursos sin explicar si la prioridad proviene de encuesta o de una fórmula, lo que puede inducir interpretaciones erróneas. La discrepancia entre los 5.486 avisos del KPI y los 7.287 de la fuente impide conciliar secciones. Además, una ocupación puede tener varios cursos; si se unen tablas sin controlar granularidad, se duplican registros y se distorsiona la comparación entre ranking, demanda y oferta formativa.
 
-La línea mensual es apropiada para tendencia, pero debería mostrar corte y unidades. Las tablas extensas de obras requieren agrupación por comuna y estado antes del detalle. Para una autoridad conviene ordenar las barras, usar moneda compacta y reservar los colores para significados consistentes; estos cambios reducen la carga de lectura y facilitan comparar territorios y montos.
+**A.4 Limitaciones y riesgos técnicos**
+Las fuentes y la presentación están acopladas, obligando a rehacer tableros por región. Los reemplazos manuales carecen de validaciones, con riesgo de publicar datos incompletos. No se informa fecha de actualización ni linaje de datos, lo que afecta confiabilidad. Finalmente, valores nulos y textos no normalizados pueden sesgar indicadores o romper procesos si no se controlan.
 
-### A.3 Consistencia interna
+---
 
-El ranking mezcla prioridad, demanda y cursos sin explicar si la prioridad proviene exclusivamente de encuesta o de una fórmula; esto puede inducir una causalidad inexistente. La discrepancia entre el KPI de 5.486 avisos y los 7.287 avisos verificables en la fuente también impide conciliar las secciones del tablero. Una ocupación prioritaria puede tener varios cursos, por lo que sumar después de un join sin controlar granularidad duplicaría atributos de recomendación y alteraría la comparación entre ranking, demanda y oferta formativa.
+### B. Propuesta de mejora o reconstrucción
 
-### A.4 Limitaciones y riesgos técnicos
+**B.1 Flujo de datos mantenible y escalable**
+Se propone una arquitectura por capas (tipo Medallón): fuentes crudas inmutables (Bronze), procesos ETL que validan y normalizan (Silver), y datos curados integrados (Gold), con una capa de presentación independiente. `codigo_ciuo` actúa como dimensión común, junto con región y periodo. Esto permite incorporar nuevas regiones sin duplicar lógica ni crear tableros paralelos.
 
-Primero, fuentes y presentación acopladas obligan a rehacer cada tablero regional, afectando al equipo mantenedor y haciendo inviable incorporar regiones de manera sostenible. Segundo, reemplazos manuales carecen de validaciones y pueden publicar columnas cambiadas o datos parciales, afectando decisiones de compra de las autoridades. Tercero, no se exhiben fecha de actualización, linaje ni controles, lo que afecta a autoridades y auditoría al impedir evaluar vigencia y confiabilidad. Cuarto, los 77 nulos salariales del corte base y textos como “55 avisos” pueden sesgar indicadores o romper cargas si se convierten silenciosamente, afectando tanto a analistas como a quienes toman decisiones basadas en esos indicadores.
+**B.2 Herramientas y tecnologías**
+Se utilizaría Python y pandas para ETL, Streamlit y Plotly para visualización, pytest para pruebas, Git para versionado y Docker para despliegue reproducible. Es un stack abierto, sin licencias por usuario y portable. Si el volumen crece, PostgreSQL puede reemplazar archivos procesados sin alterar la capa de visualización.
 
-## Parte B · Propuesta de mejora o reconstrucción
+**B.3 Separación entre datos y presentación**
+La presentación no debe modificar datos ni contener lógica de limpieza: solo consume productos validados. El ETL recibe parámetros (región, periodo, fuente) y publica tablas homogéneas. Una configuración por región permite escalar sin duplicar código. Esta separación mejora mantenibilidad y permite interfaces adaptables a distintos dispositivos.
 
-### B.1 Flujo de datos mantenible, escalable y actualizable
+**B.4 Automatización y puesta en producción**
+Las fuentes se alojan en repositorios institucionales organizados por región y periodo. Un proceso programado ejecuta el ETL, valida esquemas y consistencia, y solo publica resultados si los controles se cumplen. En caso contrario, se mantiene la versión anterior. La aplicación se despliega en contenedores accesibles vía web, con autenticación institucional y visualización de fecha de actualización.
 
-Propongo una Arquitectura Medallón adaptada (por capas): fuentes inmutables en data/raw (Capa Bronze); ETL con pandas que valida esquemas, normaliza y registra metadatos (Capa Silver); productos curados e integrados en data/processed (Capa Gold); y Streamlit/Plotly en la capa de presentación. codigo_ciuo actúa como una dimensión conformada para demanda, recomendaciones y cursos, mientras que region y periodo son dimensiones obligatorias. Esta estructura permite incorporar nuevas regiones mediante parametrización de datos y archivos de configuración, sin duplicar código ni crear tableros paralelos.
+**B.5 Uso de inteligencia artificial con resguardos**
+La IA puede asistir en la detección de inconsistencias o clasificación de datos, pero no debe modificar información automáticamente. Cada sugerencia debe ser validada por un humano y registrada. Las reglas deterministas y controles siguen siendo la base de la calidad. Como apoyo, se puede incorporar un asistente que explique indicadores usando datos agregados, sin acceso a fuentes ni capacidad de modificación.
 
-### B.2 Herramientas y tecnologías de código abierto
+**B.6 Mejora prioritaria**
+Con recursos limitados, la prioridad es implementar un ETL automatizado con validaciones y parametrización por región. Esto reduce el riesgo de errores, mejora la sostenibilidad y permite escalar. Además, establece una base confiable para futuras mejoras en visualización y despliegue.
 
-Utilizaría Python y pandas para el ETL, Streamlit y Plotly para la visualización, pytest para controles de regresión, Git para versionado y un contenedor Docker para despliegue reproducible. Este stack es abierto, ampliamente mantenido, portable y evita licencias por usuario. Para una operación con más volumen, PostgreSQL puede reemplazar los CSV procesados sin modificar la capa de presentación, preservando el control de costos y la arquitectura por capas.
+**Supuestos y limitaciones**
+Se asume uso de CLP, fechas en formato día-mes-año y CIUO como identificador textual. Las limitaciones incluyen datos ficticios de una región, ausencia de fuentes para tasas laborales y alta cantidad de valores faltantes en remuneraciones, los cuales no se imputan.
 
-### B.3 Separación entre datos y presentación para múltiples regiones
-
-La capa de presentación no debe modificar fuentes ni contener lógica de limpieza: sólo consume productos validados. El ETL recibe región, periodo y origen como parámetros, y publica tablas con el mismo esquema para todas las regiones. Una configuración por región resuelve ubicaciones de fuentes y reglas locales; así, una sola aplicación y una sola base de código atienden varias regiones sin duplicar el esfuerzo. Git aporta trazabilidad y pytest protege reglas críticas compartidas. Esta separación decouple permite además que el front-end adopte un diseño responsive y compatible con PWA (Progressive Web App), garantizando que un mismo tablero sea ágil de consultar tanto en escritorio como en tablets o smartphones ejecutivos de cualquier región.
-
-### B.4 Automatización y puesta en producción
-
-Las fuentes se alojan en una carpeta institucional (por ejemplo, SharePoint o Drive), organizada por región y periodo. Un proceso programado (scheduler diario o trigger por actualización de archivos) ejecuta el ETL automáticamente. El pipeline valida esquema, tipos y consistencia mediante pruebas; solo si los controles se cumplen se generan tablas curadas. Si fallan, se detiene la actualización y se mantiene la versión anterior.
-
-La aplicación se despliega como servicio web en contenedores Docker, accesible vía HTTPS en un dominio institucional. La autenticación se integra con el sistema institucional (por ejemplo, Azure AD), permitiendo control de acceso. El tablero muestra la fecha de última actualización, asegurando transparencia sobre la vigencia de los datos. Cada ejecución exitosa del pipeline actualiza la información disponible sin intervención manual, eliminando la dependencia del envío de archivos.
-
-### B.5 Uso de inteligencia artificial con resguardos
-
-La IA puede sugerir equivalencias para glosas nuevas o anomalías semánticas durante la limpieza, acelerando la clasificación y el hallazgo de valores sospechosos. Nunca debe modificar datos automáticamente: cada sugerencia debe incluir confianza, dato original y decisión humana. Las reglas deterministas, el catálogo CIUO, el registro de decisiones y las pruebas siguen siendo la autoridad para no comprometer calidad ni trazabilidad.
-
-Como mejora concreta adicional, cada módulo incorpora un asistente conversacional no invasivo que explica, resume y compara los indicadores visibles según los filtros activos. Solo recibe agregados de la vista, no acceso a archivos, ETL ni herramientas; su instrucción de sistema limita las respuestas al mercado laboral presentado, prohíbe modificar código o datos y exige reconocer cuando el contexto es insuficiente. Esto reduce la barrera de lectura para autoridades sin reemplazar los hallazgos reproducibles ni convertir una respuesta generativa en evidencia. La clave se gestiona mediante secretos de Streamlit, nunca en el repositorio; sin ella, el tablero conserva toda su funcionalidad analítica.
-
-### B.6 Mejora prioritaria con recursos limitados
-
-Con recursos limitados priorizaría primero un ETL automatizado con controles y actualización parametrizada por región. Corrige la condición crítica de sostenibilidad, reduce el riesgo transversal de datos erróneos y evita replicar trabajo al incorporar nuevas regiones. También crea una base confiable sobre la cual mejorar visualizaciones y desplegar el servicio institucional.
-
-Supuestos: montos en CLP; fechas día-mes-año; abreviaturas mensuales en español; CIUO como identificador textual. Limitaciones: datos ficticios de una región, ausencia de fuente para tasas laborales y alta falta de remuneraciones; estas últimas no se imputan.
 
 ## Parte 2 · Construcción y guía de entrega
 
