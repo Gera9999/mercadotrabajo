@@ -29,6 +29,8 @@ st.markdown(
     }
     .stApp { background: var(--paper); color: var(--ink); }
     [data-testid="stHeader"] { background: rgba(255, 250, 246, .92); }
+    [data-testid="stToolbar"] { display: none !important; }
+    [data-testid="stDecoration"] { display: none !important; }
     [data-testid="stSidebar"] { background: #fff3ea; border-right: 1px solid var(--line); }
     [data-testid="stSidebar"] [role="radiogroup"] label {
         border-radius: 6px; padding: .55rem .7rem; margin-bottom: .2rem;
@@ -194,6 +196,7 @@ def ask_openai(question: str, context: str) -> str:
 
 def render_ai_assistant(view_name: str, context: str) -> None:
     history_key = f"chat_history_{view_name.lower()}"
+    pending_key = f"chat_pending_{view_name.lower()}"
     history = st.session_state.setdefault(history_key, [])
     with st.popover("IA · Consultar con IA", icon=":material/smart_toy:", width="content"):
         st.caption(f"Asistente contextual · {view_name}")
@@ -204,12 +207,20 @@ def render_ai_assistant(view_name: str, context: str) -> None:
         question = st.chat_input("Pregunta sobre esta vista", key=f"chat_input_{view_name}")
         if question:
             history.append({"role": "user", "content": question})
-            try:
-                answer = ask_openai(question, context)
-            except RuntimeError as error:
-                answer = str(error)
-            history.append({"role": "assistant", "content": answer})
+            st.session_state[pending_key] = question
             st.rerun()
+
+        pending_question = st.session_state.get(pending_key)
+        if pending_question and (not history or history[-1]["role"] != "assistant"):
+            with st.chat_message("assistant"):
+                with st.spinner("Consultando..."):
+                    try:
+                        answer = ask_openai(pending_question, context)
+                    except RuntimeError as error:
+                        answer = str(error)
+                history.append({"role": "assistant", "content": answer})
+                st.session_state.pop(pending_key, None)
+                st.rerun()
 
 
 @st.cache_data(show_spinner="Actualizando modelo...")
