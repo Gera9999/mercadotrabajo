@@ -30,11 +30,13 @@ Utilizaría Python y pandas para el ETL, Streamlit y Plotly para la visualizaci�
 
 ### B.3 Separación entre datos y presentación para múltiples regiones
 
-La capa de presentación no debe modificar fuentes ni contener lógica de limpieza: sólo consume productos validados. El ETL recibe región, periodo y origen como parámetros, y publica tablas con el mismo esquema para todas las regiones. Una configuración por región resuelve ubicaciones de fuentes y reglas locales; así, una sola aplicación y una sola base de código atienden varias regiones sin duplicar el esfuerzo. Git aporta trazabilidad y pytest protege reglas críticas compartidas.
+La capa de presentación no debe modificar fuentes ni contener lógica de limpieza: sólo consume productos validados. El ETL recibe región, periodo y origen como parámetros, y publica tablas con el mismo esquema para todas las regiones. Una configuración por región resuelve ubicaciones de fuentes y reglas locales; así, una sola aplicación y una sola base de código atienden varias regiones sin duplicar el esfuerzo. Git aporta trazabilidad y pytest protege reglas críticas compartidas. Esta separación decouple permite además que el front-end adopte un diseño responsive y compatible con PWA (Progressive Web App), garantizando que un mismo tablero sea ágil de consultar tanto en escritorio como en tablets o smartphones ejecutivos de cualquier región.
 
 ### B.4 Automatización y puesta en producción
 
-En producción, la ingesta y el despliegue se gestionan mediante un pipeline de CI/CD (ej. mediante GitHub Actions o un orquestador de tareas) que detecta nuevos archivos en SharePoint o Drive vía API, ejecuta pruebas unitarias/de calidad (pytest) y actualiza las salidas de forma atómica solo tras aprobar los controles. Un contenedor Docker desplegado tras un proxy HTTPS con autenticación institucional sirve la aplicación de Streamlit para consulta web. La operación se complementa con gestión de secretos, trazabilidad de logs y versionado de artefactos; si los nuevos datos fallan en las validaciones, el pipeline cancela la ejecución y mantiene activa la versión estable anterior, eliminando la dependencia de procesos manuales.
+Las fuentes se alojan en una carpeta institucional (por ejemplo, SharePoint o Drive), organizada por región y periodo. Un proceso programado (scheduler diario o trigger por actualización de archivos) ejecuta el ETL automáticamente. El pipeline valida esquema, tipos y consistencia mediante pruebas; solo si los controles se cumplen se generan tablas curadas. Si fallan, se detiene la actualización y se mantiene la versión anterior.
+
+La aplicación se despliega como servicio web en contenedores Docker, accesible vía HTTPS en un dominio institucional. La autenticación se integra con el sistema institucional (por ejemplo, Azure AD), permitiendo control de acceso. El tablero muestra la fecha de última actualización, asegurando transparencia sobre la vigencia de los datos. Cada ejecución exitosa del pipeline actualiza la información disponible sin intervención manual, eliminando la dependencia del envío de archivos.
 
 ### B.5 Uso de inteligencia artificial con resguardos
 
